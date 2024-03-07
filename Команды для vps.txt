@@ -1,0 +1,58 @@
+Создание виртуального окружения: python3 -m venv venvName
+
+Запуск виртуального окружения: source venvName/bin/activate
+
+Обновление pip пакетов: pip install -U package_name
+
+Установка необходимых для корректной работы google-chroma пакетов:
+sudo apt install -y libxss1 libappindicator1 libindicator7
+
+Скачать google-chrome: 
+sudo wget https://dl.google.com/linux/direct/google-crhome-stable_current_amd64.deb
+
+Установка Chrome:
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+Фиксим/подтягиваем зависимости:
+sudo apt install -y -f
+
+Проверить версию:
+google-chrome --version
+
+Далее скачать с https://googlechromelabs.github.io/chrome-for-testing/ версию драйвера и закинуть на VPS
+В файле .py где используется драйвер нужно будет указать путь и прописать конфиги:
+
+    service = Service(executable_path="drive/chromedriver-linux64/chromedriver")
+
+    # Нужно чтобы запускать в фоновом режиме без GUI. Скриншоты также будут работать
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")
+
+    # Нужно, чтобы не ждать, пока загрузиться вся страница, типа Js или ещё что-то.
+    # Достаточно того, что можно взаимодействовать со страницей
+    chrome_options.page_load_strategy = "eager"
+
+    # Это нужно для VPS
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+Перейти в директорию где находится драйвер и прописать: chmod 755 chromedriver
+
+
+
+
+Установка screen: sudo apt install screen
+
+Создаст новый screen: screen
+
+Свернуть screen: CRTL + A, после чего нажмаем D
+
+Что-бы посмотреть список запущенных screen: screen -ls
+
+Что-бы вернуться к свёрнутому screen: screen -r
+
+Возврат к конкретному скрину: screen -r имя_скрина
+
+Что-бы завершить сессию/закрыть screen: exit
