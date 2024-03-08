@@ -1,8 +1,12 @@
 import asyncio
 import os
 import sqlite3
+import logging
 
-
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
 async def check_url_in_db():
     conn = sqlite3.connect('database/base_urls.db')
     cursor = conn.cursor()

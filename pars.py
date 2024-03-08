@@ -1,19 +1,25 @@
 import asyncio
+import logging
 import os
-import time
 import random
 
-from selenium.webdriver.common.by import By
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
-from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
+
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
+from telegram.ext import ContextTypes
 
 from check_in_db import append_urls, check_url_in_db
 
-url = "https://www.avito.ru/syktyvkar/kvartiry/prodam-ASgBAgICAUSSA8YQ?s=104"
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
+url = "https://www.avito.ru/syktyvkar/kvartiry/prodam-ASgBAgICAUSSA8YQ?f=ASgBAgICAkSSA8YQkL4Nlq41&s=104"
 
 just_text = ["Новая квартира, 🏃‍♂️ бегооооооом", "Опа-опа-опа - квартира 👾!", "АЛЯРМ 🔔, новая квартира",
              "Там это, квартира новая 👉🏻", "Ну ты там долго 😶, заберут ведь скоро"]
@@ -43,6 +49,7 @@ async def pars_html():
 
     with open(f"2avito/kvartiry_syktyvkar_page_1.html", "w", encoding='utf-8') as file:
         file.write(html)
+    print(f"Скачал страницу - 1")
 
     with open(f"2avito/kvartiry_syktyvkar_page_1.html", "r", encoding='utf-8') as file:
         page = file.read()
@@ -66,47 +73,42 @@ async def pars_html():
         except:
             break
 
-        if i == 3:
+        if i == 1:
             break
 
     assert "No results found." not in driver.page_source
 
     driver.close()
 
-    return int(4)
+    return int(2)
 
 
-async def get_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    while True:
-        pages = await pars_html()
+# Сюда передаётся именно как (context: ContextTypes.DEFAULT_TYPE)
+async def get_url(context: ContextTypes.DEFAULT_TYPE):
 
-        time.sleep(3)
+    pages = await pars_html()
+    for number_page in range(0, pages):
 
-        for i in range(0, pages):
+        with open(f"2avito/kvartiry_syktyvkar_page_{number_page + 1}.html", "r", encoding='utf-8') as file:
+            page = file.read()
 
-            with open(f"2avito/kvartiry_syktyvkar_page_{i+1}.html", "r", encoding='utf-8') as file:
-                page = file.read()
+        soup = BeautifulSoup(page, 'html.parser')
 
-            soup = BeautifulSoup(page, 'html.parser')
+        urls = []
+        for href in soup.find_all("a", class_="iva-item-sliderLink-uLz1v"):
+            urls.append(f"https://www.avito.ru{href.get('href')}")
 
-            urls = []
-            for j in soup.find_all("a", class_="iva-item-sliderLink-uLz1v"):
-                urls.append(f"https://www.avito.ru{j.get('href')}")
+        for url in urls:
+            if url not in await check_url_in_db():
+                print(f"Добавил - {url}")
+                await append_urls(url)
+                random_text = random.choice(just_text)
+                await context.bot.send_message(chat_id=context.job.chat_id, text=f"{random_text} - {url}")
+                await asyncio.sleep(2)
 
-            for j in urls:
+            else:
+                pass
 
-                if j not in await check_url_in_db():
-                    await append_urls(j)
-                    random_text = random.choice(just_text)
-                    await context.bot.send_message(chat_id=update.effective_chat.id, text=f"{random_text} - {j}")
-                    await asyncio.sleep(3)
-
-                else:
-                    pass
-
-        await asyncio.sleep(300)
-
-
-if __name__ == '__main__':
-    asyncio.run(pars_html())
+# if __name__ == '__main__':
+    # asyncio.run(pars_html())
     # asyncio.run(get_url())
