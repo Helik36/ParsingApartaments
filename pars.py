@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import os
-import random
 
 from bs4 import BeautifulSoup
 
@@ -25,7 +24,7 @@ just_text = ["Новая квартира, 🏃‍♂️ бегооооооом"
 
 
 async def pars_html(context: ContextTypes.DEFAULT_TYPE):
-    service = Service(executable_path="drive/chromedriver-linux64/chromedriver")
+    service = Service(executable_path="driver/chromedriver-linux64/chromedriver")
     # Нужно, чтобы запускать в фоновом режиме без GUI. Скриншоты также будут работать
     chrome_options = Options()
     chrome_options.add_argument("--headless=new")
