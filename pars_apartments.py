@@ -80,25 +80,23 @@ async def pars_html():
                 print("Возникла ошибка при сохранений файла")
                 break
 
-            if i == 1:
-                break
+            # if i == 1:
+            #     break
 
         assert "No results found." not in driver.page_source
 
         driver.close()
 
-        return int(2)
-        # return int(last_page)
+        # return int(2)
+        return int(last_page)
 
     except:
         print("Возникла ошибка")
         driver.close()
 
 
-
 # Сюда передаётся именно как (context: ContextTypes.DEFAULT_TYPE)
 async def get_apartments_url(context: ContextTypes.DEFAULT_TYPE):
-
     pages = await pars_html()
 
     urls_from_db, date_from_db = await check_url_in_db("urls_apartment_db")
@@ -124,8 +122,8 @@ async def get_apartments_url(context: ContextTypes.DEFAULT_TYPE):
             else:
                 pass
 
-async def append_urls_in_db():
 
+async def append_urls_in_db():
     pages = await pars_html()
 
     urls_from_db, date_from_db = await check_url_in_db("urls_apartment_db")

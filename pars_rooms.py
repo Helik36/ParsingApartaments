@@ -75,15 +75,15 @@ async def pars_html():
                 print("Возникла ошибка при сохранений файла")
                 break
 
-            if i == 1:
-                break
+            # if i == 1:
+            #     break
 
         assert "No results found." not in driver.page_source
 
         driver.close()
 
-        return int(2)
-        # return int(last_page)
+        # return int(2)
+        return int(last_page)
 
     except:
         print("Возникла ошибка")

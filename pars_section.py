@@ -39,57 +39,57 @@ async def pars_html():
 
     driver = webdriver.Chrome(options=chrome_options)
 
-    # try:
-    driver.get(url)
-    assert "Купить" in driver.title
-
-    html = driver.page_source
-
     try:
-        os.mkdir("2section")
-    except FileExistsError:
-        pass
+        driver.get(url)
+        # assert "Купить" in driver.title
 
-    with open(f"2section/doma_dachi_kottedzhi_page_1.html", "w", encoding='utf-8') as file:
-        file.write(html)
-    print(f"Скачал страницу участков - 1")
-
-    with open(f"2section/doma_dachi_kottedzhi_page_1.html", "r", encoding='utf-8') as file:
-        page = file.read()
-
-    soup = BeautifulSoup(page, 'html.parser')
-
-    last_page = soup.find_all("span", class_="styles-module-text-InivV")[-1].text
-
-    for i in range(1, int(last_page)):
+        html = driver.page_source
 
         try:
-            check = driver.find_elements(By.CLASS_NAME, "styles-module-item-kF45w")[-1]
-            check.click()
+            os.mkdir("2section")
+        except FileExistsError:
+            pass
 
-            html = driver.page_source
+        with open(f"2section/doma_dachi_kottedzhi_page_1.html", "w", encoding='utf-8') as file:
+            file.write(html)
+        print(f"Скачал страницу участков - 1")
 
-            print(f"Скачал страницу участков - {i + 1}")
+        with open(f"2section/doma_dachi_kottedzhi_page_1.html", "r", encoding='utf-8') as file:
+            page = file.read()
 
-            with open(f"2section/doma_dachi_kottedzhi_page_{i + 1}.html", "w", encoding='utf-8') as file:
-                file.write(html)
-        except:
-            print("Возникла ошибка при сохранений файла")
-            break
+        soup = BeautifulSoup(page, 'html.parser')
 
-        if i == 1:
-            break
+        last_page = soup.find_all("span", class_="styles-module-text-InivV")[-1].text
 
-    assert "No results found." not in driver.page_source
+        for i in range(1, int(last_page)):
 
-    driver.close()
+            try:
+                check = driver.find_elements(By.CLASS_NAME, "styles-module-item-kF45w")[-1]
+                check.click()
 
-    return int(2)
-    # return int(last_page)
+                html = driver.page_source
 
-# except:
-# print("Возникла ошибка")
-# driver.close()
+                print(f"Скачал страницу участков - {i + 1}")
+
+                with open(f"2section/doma_dachi_kottedzhi_page_{i + 1}.html", "w", encoding='utf-8') as file:
+                    file.write(html)
+            except:
+                print("Возникла ошибка при сохранений файла")
+                break
+
+            # if i == 1:
+            #     break
+
+        assert "No results found." not in driver.page_source
+
+        driver.close()
+
+        # return int(2)
+        return int(last_page)
+
+    except:
+        print("Возникла ошибка")
+        driver.close()
 
 
 # Сюда передаётся именно как (context: ContextTypes.DEFAULT_TYPE)
