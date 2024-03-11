@@ -14,7 +14,7 @@ async def check_url_in_db(db):
     conn = sqlite3.connect('database/base_urls.db')
     cursor = conn.cursor()
 
-    list_urls = [i[0] for i in cursor.execute(f"SELECT urls, date FROM {db}")]
+    list_urls = [i[0] for i in cursor.execute(f"SELECT urls FROM {db}")]
     list_date = [i[0] for i in cursor.execute(f"SELECT date FROM {db}")]
 
     return list_urls, list_date
@@ -57,6 +57,14 @@ async def create_db():
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS urls_rooms_db(
+    id INTEGER PRIMARY KEY,
+    urls TEXT NOT NULL,
+    date TEXT NOT NULL
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS urls_lands_db(
     id INTEGER PRIMARY KEY,
     urls TEXT NOT NULL,
     date TEXT NOT NULL
