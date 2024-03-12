@@ -54,7 +54,6 @@ async def send_message_about_new_url(context: ContextTypes.DEFAULT_TYPE):
 
                 random_text = random.choice(just_text)
                 await context.bot.send_message(chat_id=id_user_telegram, text=f'{random_text} - {url}')
-                await asyncio.sleep(2)
 
         await detele_new_url()
 

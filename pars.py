@@ -19,83 +19,84 @@ urls_pars = ["https://www.avito.ru/syktyvkar/kvartiry/prodam-ASgBAgICAUSSA8YQ?f=
 
 
 async def pars_html():
-    await asyncio.sleep(180)
-    service = Service(executable_path="driver/chromedriver-linux64/chromedriver")
-    # Нужно, чтобы запускать в фоновом режиме без GUI. Скриншоты также будут работать
-    chrome_options = Options()
-    chrome_options.add_argument("--headless=new")
+    while True:
+        await asyncio.sleep(60)
+        service = Service(executable_path="driver/chromedriver-linux64/chromedriver")
+        # Нужно, чтобы запускать в фоновом режиме без GUI. Скриншоты также будут работать
+        chrome_options = Options()
+        chrome_options.add_argument("--headless=new")
 
-    # Нужно, чтобы не ждать, пока загрузиться вся страница, типа Js или ещё что-то.
-    # Достаточно того, что можно взаимодействовать со страницей
-    # normal - Used by default, waits for all resources to download
-    # eager	 - DOM access is ready, but other resources like images may still be loading
-    # none   -Does not block WebDriver at all
-    chrome_options.page_load_strategy = "eager"
-    chrome_options.add_argument('--no-sandbox')
-    chrome_options.add_argument('--disable-dev-shm-usage')
+        # Нужно, чтобы не ждать, пока загрузиться вся страница, типа Js или ещё что-то.
+        # Достаточно того, что можно взаимодействовать со страницей
+        # normal - Used by default, waits for all resources to download
+        # eager	 - DOM access is ready, but other resources like images may still be loading
+        # none   -Does not block WebDriver at all
+        chrome_options.page_load_strategy = "eager"
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
 
-    count = 1
-    for url in urls_pars:
-        print("pip")
-        driver = webdriver.Chrome(options=chrome_options)
-        try:
-            driver.get(url)
-            assert "Купить" in driver.title
-
-            html = driver.page_source
-
+        count = 1
+        for url in urls_pars:
+            await asyncio.sleep(0)
+            driver = webdriver.Chrome(options=chrome_options)
             try:
-                os.mkdir(f"{count}{url.split('/')[4]}")
-            except FileExistsError:
-                pass
+                driver.get(url)
+                assert "Купить" in driver.title
 
-            name_html = f"{count}{url.split('/')[4]}/{url.split('/')[4]}"
-
-            with open(f"{name_html}_page_1.html", "w", encoding='utf-8') as file:
-                file.write(html)
-
-            with open(f"{name_html}_page_1.html", "r", encoding='utf-8') as file:
-                page = file.read()
-
-            soup = BeautifulSoup(page, 'html.parser')
-
-            last_page = soup.find_all("span", class_="styles-module-text-InivV")[-1].text
-
-            for i in range(1, int(last_page)):
+                html = driver.page_source
 
                 try:
-                    check = driver.find_elements(By.CLASS_NAME, "styles-module-item-kF45w")[-1]
-                    check.click()
+                    os.mkdir(f"{count}{url.split('/')[4]}")
+                except FileExistsError:
+                    pass
 
-                    html = driver.page_source
+                name_html = f"{count}{url.split('/')[4]}/{url.split('/')[4]}"
 
-                    with open(f"{name_html}_page_{i + 1}.html", "w",
-                              encoding='utf-8') as file:
-                        file.write(html)
+                with open(f"{name_html}_page_1.html", "w", encoding='utf-8') as file:
+                    file.write(html)
 
-                except FileNotFoundError:
-                    print("Возникла ошибка при сохранений файла")
-                    break
+                with open(f"{name_html}_page_1.html", "r", encoding='utf-8') as file:
+                    page = file.read()
 
-                if i == 1:
-                    break
+                soup = BeautifulSoup(page, 'html.parser')
 
-            assert "No results found." not in driver.page_source
+                last_page = soup.find_all("span", class_="styles-module-text-InivV")[-1].text
 
-            driver.close()
+                for i in range(1, int(last_page)):
 
-            await get_apartments_url(int(1), name_html)
-            print("end")
-            count += 1
+                    try:
+                        check = driver.find_elements(By.CLASS_NAME, "styles-module-item-kF45w")[-1]
+                        check.click()
 
-        except:
-            print("Возникла ошибка.")
-            driver.close()
+                        html = driver.page_source
+
+                        with open(f"{name_html}_page_{i + 1}.html", "w",
+                                  encoding='utf-8') as file:
+                            file.write(html)
+
+                        await asyncio.sleep(0)
+
+                    except FileNotFoundError:
+                        print("Возникла ошибка при сохранений файла")
+                        break
+
+                    if i == 1:
+                        break
+
+                assert "No results found." not in driver.page_source
+
+                driver.close()
+
+                await get_apartments_url(int(1), name_html)
+                count += 1
+
+            except:
+                print("Возникла ошибка.")
+                driver.close()
 
 
 async def get_apartments_url(pages, name_html):
     db = ""
-    just_text = []
 
     if "kvartiry" in name_html:
         db = "urls_apartment_db"

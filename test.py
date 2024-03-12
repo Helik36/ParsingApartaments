@@ -1,35 +1,38 @@
 import asyncio
 import datetime
+import time
 
 from check_in_db import check_url_in_db
 
 
-# async def test():
-# urls_db, dates_db = await check_url_in_db("urls_apartment_db")
-# urls = urls_db
-# dates = dates_db
-#
-# for url in range(len(urls)):
-#     print(f"{dates[url]} - {urls[url]}")
-#
-# print("\n\n")
-#
-# urls_db, dates_db = await check_url_in_db("urls_section_db")
-# urls = urls_db
-# dates = dates_db
-#
-# for url in range(len(urls)):
-#     print(f"{dates[url]} - {urls[url]}")
-#
-#
-# print("\n\n")
-#
-# urls_db, dates_db = await check_url_in_db("urls_rooms_db")
-# urls = urls_db
-# dates = dates_db
-#
-# for url in range(len(urls)):
-#     print(f"{dates[url]} - {urls[url]}")
+async def check_db():
+    urls_db, dates_db = await check_url_in_db("urls_apartment_db")
+
+
+    urls = urls_db
+    dates = dates_db
+
+    for url in range(len(urls)):
+        print(f"{dates[url]} - {urls[url]}")
+
+    print("\n\n")
+
+    urls_db, dates_db = await check_url_in_db("urls_section_db")
+    urls = urls_db
+    dates = dates_db
+
+    for url in range(len(urls)):
+        print(f"{dates[url]} - {urls[url]}")
+
+    print("\n\n")
+
+    urls_db, dates_db = await check_url_in_db("urls_rooms_db")
+    urls = urls_db
+    dates = dates_db
+
+    for url in range(len(urls)):
+        print(f"{dates[url]} - {urls[url]}")
+
 
 # print(datetime.datetime.now().strftime("%d-%m-%Y %H:%M"))
 
@@ -42,13 +45,14 @@ from check_in_db import check_url_in_db
 async def loop1():
     while True:
         print("1")
-        await asyncio.sleep(1)
+        time.sleep(1)
 
 
 async def loop2():
     while True:
         print("2")
-        await asyncio.sleep(3)
+        time.sleep(2)
+
 
 async def main():
     task1 = asyncio.create_task(loop1())
@@ -58,6 +62,8 @@ async def main():
 
     await asyncio.gather(*[task1, task2])
 
-if __name__ == '__main__':
 
-    asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(check_db())
+
+# asyncio.run(main())
