@@ -10,11 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 
-from telegram.ext import ContextTypes
-
-from check_in_db import append_urls, check_url_in_db
-
-logging.basicConfig(level=logging.DEBUG)
+from check_in_db import append_urls, check_url_in_db, append_new_url_from_pars
 
 urls_pars = ["https://www.avito.ru/syktyvkar/kvartiry/prodam-ASgBAgICAUSSA8YQ?f=ASgBAgICAkSSA8YQkL4Nlq41&s=104",
              "https://www.avito.ru/syktyvkar/doma_dachi_kottedzhi/prodam-ASgBAgICAUSUA9AQ?cd=1&p=1&s=104&user=1",
@@ -22,7 +18,8 @@ urls_pars = ["https://www.avito.ru/syktyvkar/kvartiry/prodam-ASgBAgICAUSSA8YQ?f=
              "https://www.avito.ru/syktyvkar/zemelnye_uchastki/prodam-ASgBAgICAUSWA9oQ?cd=1&s=104&user=1"]
 
 
-async def pars_html(context: ContextTypes.DEFAULT_TYPE):
+async def pars_html():
+    await asyncio.sleep(180)
     service = Service(executable_path="driver/chromedriver-linux64/chromedriver")
     # Нужно, чтобы запускать в фоновом режиме без GUI. Скриншоты также будут работать
     chrome_options = Options()
@@ -39,15 +36,14 @@ async def pars_html(context: ContextTypes.DEFAULT_TYPE):
 
     count = 1
     for url in urls_pars:
+        print("pip")
         driver = webdriver.Chrome(options=chrome_options)
         try:
-            logging.basicConfig(level=logging.DEBUG)
             driver.get(url)
             assert "Купить" in driver.title
 
             html = driver.page_source
 
-            print(f"{count}{url.split('/')}\n{count}{url.split('/')[4]}")
             try:
                 os.mkdir(f"{count}{url.split('/')[4]}")
             except FileExistsError:
@@ -88,8 +84,8 @@ async def pars_html(context: ContextTypes.DEFAULT_TYPE):
 
             driver.close()
 
-            await get_apartments_url(context, int(1), name_html)
-
+            await get_apartments_url(int(1), name_html)
+            print("end")
             count += 1
 
         except:
@@ -97,29 +93,21 @@ async def pars_html(context: ContextTypes.DEFAULT_TYPE):
             driver.close()
 
 
-# Сюда передаётся именно как (context: ContextTypes.DEFAULT_TYPE)
-async def get_apartments_url(context: ContextTypes.DEFAULT_TYPE, pages, name_html):
-
+async def get_apartments_url(pages, name_html):
     db = ""
     just_text = []
 
     if "kvartiry" in name_html:
         db = "urls_apartment_db"
-        just_text = ["Новая квартира, 🏃‍♂️ бегооооооом", "Опа-опа-опа - квартира!👾", "АЛЯРМ 🔔, новая квартира",
-                     "Там это, квартира новая 👉🏻", "Ну ты там долго 😶, заберут ведь скоро"]
 
     elif "doma_dachi_kottedzhi" in name_html:
         db = "urls_section_db"
-        just_text = ["🏠Новый дом", "🏗Дом",  "🔔Новое объявление дома", "Объявление дома/дачи/коттетджа/чеготамещё 👉🏻"]
-
 
     elif "komnaty" in name_html:
         db = "urls_rooms_db"
-        just_text = ["⛺️Новая комната", "🗿Новая cumната", "Объявление комнаты 👉🏻", "🔔Новое объявление комнаты"]
 
     elif "zemelnye_uchastki" in name_html:
         db = "urls_lands_db"
-        just_text = ["🌅Новое объявление участка", "Новый участок", "Объявление участка 👉🏻", "🔔Новое объявление участка"]
 
     urls_from_db, date_from_db = await check_url_in_db(db)
 
@@ -137,12 +125,9 @@ async def get_apartments_url(context: ContextTypes.DEFAULT_TYPE, pages, name_htm
         for new_url in new_urls:
             if new_url not in urls_from_db:
                 await append_urls(new_url, db)
-                random_text = random.choice(just_text)
-                await context.bot.send_message(chat_id=context.job.chat_id, text=f"{random_text} - {new_url}")
-                await asyncio.sleep(2)
+                await append_new_url_from_pars(new_url)
 
             else:
                 pass
 
     await asyncio.sleep(60)
-
