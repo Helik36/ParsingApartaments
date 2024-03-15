@@ -7,7 +7,7 @@ import logging
 from config import API, MY_ID
 from check_in_db import append_users_id_telegram, get_users_id_telegram, get_new_url_from_pars, detele_new_url
 
-from pars import pars_html
+from Pars_avito import pars_html
 
 token = API
 my_id = MY_ID
