@@ -3,7 +3,6 @@ import os
 import sqlite3
 import datetime
 
-
 async def check_url_in_db(db):
     conn = sqlite3.connect('database/base_urls.db')
     cursor = conn.cursor()

@@ -110,7 +110,7 @@ async def get_apartments_url(pages, name_html):
     elif "zemelnye_uchastki" in name_html:
         db = "urls_lands_db"
 
-    urls_from_db, date_from_db = await check_url_in_db(db)
+    urls_in_db, date_in_db = await check_url_in_db(db)
 
     for number_page in range(0, int(pages)):
 
@@ -124,7 +124,7 @@ async def get_apartments_url(pages, name_html):
             new_urls.append(f"https://www.avito.ru{href.get('href')}")
 
         for new_url in new_urls:
-            if new_url not in urls_from_db:
+            if new_url not in urls_in_db:
                 await append_urls(new_url, db)
                 await append_new_url_from_pars(new_url)
 
