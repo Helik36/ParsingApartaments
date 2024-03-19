@@ -12,14 +12,12 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-
 async def get_pages_cian():
     urls = [
         "https://syktyvkar.cian.ru/kupit-kvartiru/?deal_type=sale&engine_version=2&offer_seller_type%5B0%5D=2&offer_type=flat&p=1&region=5006&room1=1&room2=1&room3=1&room4=1&room5=1&room6=1&sort=creation_date_desc",
         "https://syktyvkar.cian.ru/kupit-komnatu-bez-posrednikov/?deal_type=sale&engine_version=2&is_by_homeowner=1&offer_type=flat&p=1&region=5006&room0=1&sort=creation_date_desc",
         "https://syktyvkar.cian.ru/kupit-zemelniy-uchastok/?deal_type=sale&engine_version=2&object_type%5B0%5D=3&offer_seller_type%5B0%5D=2&offer_type=suburban&p=1&region=5006&sort=creation_date_desc",
-        # "https://syktyvkar.cian.ru/kupit-dom/?deal_type=sale&engine_version=2&object_type%5B0%5D=1&offer_seller_type%5B0%5D=2&offer_type=suburban&p=1&region=5006&sort=creation_date_desc"
-        # Плохр работает
+        "https://syktyvkar.cian.ru/kupit-dom/?deal_type=sale&engine_version=2&object_type%5B0%5D=1&offer_seller_type%5B0%5D=2&offer_type=suburban&p=1&region=5006&sort=creation_date_desc"
     ]
 
     for url in urls:
@@ -27,6 +25,11 @@ async def get_pages_cian():
             request = requests.get(url)
             name_page = url.split("/")[3]
             number_page = url.split('&')[4]
+
+            try:
+                os.mkdir(f"Cian_Pages")
+            except FileExistsError:
+                pass
 
             try:
                 os.mkdir(f"Cian_Pages/{name_page}")
@@ -115,7 +118,7 @@ async def get_urls(name_page):
         soup = BeautifulSoup(page, "html.parser")
 
         get_url_ad = []
-        # Делаем выборку только по выбранным фильтрам (без предложения циана об осмотре других объявлений
+        # Делаем выборку только по выбранным фильтрам (без предложения циана об осмотре других объявлений)
         for tag_class in soup.find(class_="_93444fe79c--wrapper--W0WqH"):
 
             # Проходимся по массиву и забираем теги а
@@ -128,11 +131,11 @@ async def get_urls(name_page):
                 # await append_new_url_from_pars(url)
                 logging.info(f"Добавлен {url}")
             else:
-                logging.info(f"Добавлять нечего")
                 break
 
     except KeyboardInterrupt:
         KeyboardInterrupt()
+
+
 if __name__ == '__main__':
     asyncio.run(get_pages_cian())
-    # asyncio.run(get_urls())

@@ -19,8 +19,9 @@ urls_pars = ["https://www.avito.ru/syktyvkar/kvartiry/prodam-ASgBAgICAUSSA8YQ?f=
 
 
 async def pars_html():
+
     while True:
-        await asyncio.sleep(60)
+        # await asyncio.sleep(60)
         service = Service(executable_path="driver/chromedriver-linux64/chromedriver")
         # Нужно, чтобы запускать в фоновом режиме без GUI. Скриншоты также будут работать
         chrome_options = Options()
@@ -46,12 +47,17 @@ async def pars_html():
                 html = driver.page_source
 
                 try:
-                    os.mkdir(f"{count}{url.split('/')[4]}")
+                    os.mkdir("Avito_Pages")
                 except FileExistsError:
                     pass
 
-                name_html = f"{count}{url.split('/')[4]}/{url.split('/')[4]}"
+                try:
+                    os.mkdir(f"Avito_Pages/{count}{url.split('/')[4]}")
+                except FileExistsError:
+                    pass
 
+                name_html = f"Avito_Pages/{count}{url.split('/')[4]}/{url.split('/')[4]}"
+                
                 with open(f"{name_html}_page_1.html", "w", encoding='utf-8') as file:
                     file.write(html)
 
@@ -132,3 +138,7 @@ async def get_apartments_url(pages, name_html):
                 pass
 
     await asyncio.sleep(60)
+
+
+if __name__ == '__main__':
+    asyncio.run(pars_html())
