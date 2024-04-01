@@ -56,6 +56,7 @@ class ParsingPages:
             # return type_search, f"{main_folder}/{type_search}/{name_page_html}"
 
             logging.info(f'Переход к get_urls')
+            await asyncio.sleep(0)
 
             db = ""
             if type_search in ["kupit-kvartiru", "kvartiry"]:
@@ -93,9 +94,9 @@ class ParsingPages:
             for new_url in get_href:
                 if new_url not in urls_in_db:
                     await append_urls(new_url, db, "database/base_urls.db")
-                    await append_new_url_from_pars(url, "database/base_urls.db")
+                    await append_new_url_from_pars(new_url, "database/base_urls.db")
                     logging.info(f"Добавлен {new_url}")
                 else:
                     continue
 
-            await asyncio.sleep(30)
+            await asyncio.sleep(15)

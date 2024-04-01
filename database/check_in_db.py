@@ -2,6 +2,7 @@ import asyncio
 import sqlite3
 import datetime
 
+path_db = "base_urls.db"
 
 async def check_url_in_db(db, path):
     conn = sqlite3.connect(path)
@@ -70,8 +71,26 @@ async def detele_new_url(path):
     conn.close()
 
 
-async def create_db():
+async def delete_users_id_telegram(path):
+    conn = sqlite3.connect(path)
+    cursor = conn.cursor()
 
+    cursor.execute("DELETE FROM chat_id_users WHERE users_id = 944860557")
+
+    conn.commit()
+    conn.close()
+
+async def delete_urls_from_table(path):
+    conn = sqlite3.connect(path)
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM urls_rooms_db")
+
+    conn.commit()
+    conn.close()
+
+
+async def create_db():
     conn = sqlite3.connect('base_urls.db')
     cursor = conn.cursor()
 
@@ -125,7 +144,8 @@ async def create_db():
     conn.close()
 
 
-if __name__ == '__main__':
-
-    asyncio.run(create_db())
-
+# if __name__ == '__main__':
+    # asyncio.run(create_db())
+    # asyncio.run(delete_users_id_telegram(path_db))
+    # asyncio.run(detele_new_url(path_db))
+    # asyncio.run(delete_urls_from_table(path_db))
