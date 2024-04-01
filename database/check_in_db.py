@@ -1,10 +1,10 @@
 import asyncio
-import os
 import sqlite3
 import datetime
 
-async def check_url_in_db(db):
-    conn = sqlite3.connect('database/base_urls.db')
+
+async def check_url_in_db(db, path):
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     list_urls = [i[0] for i in cursor.execute(f"SELECT urls FROM {db}")]
@@ -13,8 +13,8 @@ async def check_url_in_db(db):
     return list_urls, list_date
 
 
-async def append_urls(url, db):
-    conn = sqlite3.connect('database/base_urls.db')
+async def append_urls(url, db, path):
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     cursor.execute(f"INSERT INTO {db} (urls, date) VALUES (?, ?)",
@@ -23,8 +23,8 @@ async def append_urls(url, db):
     conn.close()
 
 
-async def append_users_id_telegram(id_user):
-    conn = sqlite3.connect('database/base_urls.db')
+async def append_users_id_telegram(id_user, path):
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     cursor.execute(f"INSERT INTO chat_id_users (users_id) VALUES (?)", [id_user])
@@ -32,8 +32,8 @@ async def append_users_id_telegram(id_user):
     conn.close()
 
 
-async def get_users_id_telegram():
-    conn = sqlite3.connect('database/base_urls.db')
+async def get_users_id_telegram(path):
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     user_id_telegram = [i[0] for i in cursor.execute("SELECT users_id FROM chat_id_users")]
@@ -42,16 +42,17 @@ async def get_users_id_telegram():
     return user_id_telegram
 
 
-async def append_new_url_from_pars(url):
-    conn = sqlite3.connect('database/base_urls.db')
+async def append_new_url_from_pars(url, path):
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     cursor.execute(f"INSERT INTO new_urls_pars (urls) VALUES (?)", [url])
     conn.commit()
     conn.close()
 
-async def get_new_url_from_pars():
-    conn = sqlite3.connect('database/base_urls.db')
+
+async def get_new_url_from_pars(path):
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     get_new_url = [i[0] for i in cursor.execute(f"SELECT urls FROM new_urls_pars")]
@@ -59,8 +60,9 @@ async def get_new_url_from_pars():
 
     return get_new_url
 
-async def detele_new_url():
-    conn = sqlite3.connect('database/base_urls.db')
+
+async def detele_new_url(path):
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     cursor.execute(f"DELETE FROM new_urls_pars")
@@ -69,12 +71,8 @@ async def detele_new_url():
 
 
 async def create_db():
-    try:
-        os.mkdir("database")
-    except FileExistsError:
-        pass
 
-    conn = sqlite3.connect('database/base_urls.db')
+    conn = sqlite3.connect('base_urls.db')
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -128,12 +126,6 @@ async def create_db():
 
 
 if __name__ == '__main__':
-    asyncio.run(create_db())
 
-    # conn = sqlite3.connect('database/base_urls.db')
-    # cursor = conn.cursor()
-    #
-    # cursor.execute(f"DROP TABLE chat_id_users")
-    # conn.commit()
-    # conn.close()
+    asyncio.run(create_db())
 

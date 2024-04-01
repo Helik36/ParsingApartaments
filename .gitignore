@@ -1,3 +1,4 @@
 # private tokens and session
-config.py
+config/config.py
+database/base_urls.db
 *.html

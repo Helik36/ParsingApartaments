@@ -4,10 +4,10 @@ import random
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 import logging
-from config import API, MY_ID
-from check_in_db import append_users_id_telegram, get_users_id_telegram, get_new_url_from_pars, detele_new_url
+from config.config import API, MY_ID
+from database.check_in_db import append_users_id_telegram, get_users_id_telegram, get_new_url_from_pars, detele_new_url
 
-from Pars_Avito import pars_html
+from data_Avito import pars_html
 
 token = API
 my_id = MY_ID
@@ -18,7 +18,6 @@ logging.basicConfig(
 )
 
 BUTTON = range(1)
-
 
 # Сюда передаётся именно как (context: ContextTypes.DEFAULT_TYPE)
 async def send_message_about_new_url(context: ContextTypes.DEFAULT_TYPE):
