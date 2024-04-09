@@ -11,20 +11,25 @@ logging.basicConfig(
     level=logging.INFO)
 
 
-class ParsingPages:
+class ParsingSites:
     def __init__(self, urls, current_panel, class_ads, **args):
         self.urls = urls
         self.current_panel = current_panel
         self.class_ads = class_ads
         self.args = args
 
-    async def parsing_page(self):
+    async def parsing_page(self, proxies=None):
 
         await asyncio.sleep(0)
 
         for url in self.urls:
 
-            request = requests.get(url, cookies=self.args["cookies"], headers=self.args["headers"], timeout=5)
+            if proxies is None:
+                request = requests.get(url, cookies=self.args["cookies"], headers=self.args["headers"])
+
+            else:
+                request = requests.get(url, cookies=self.args["cookies"], headers=self.args["headers"], proxies=proxies)
+
             logging.info(f'{request.status_code}')
             html = request.text
 
@@ -79,14 +84,15 @@ class ParsingPages:
             soup = BeautifulSoup(page, "html.parser")
 
             get_href = []
-            # Делаем выборку только по выбранным фильтрам (без предложения циана об осмотре других объявлений)
+            # Делаем выборку только по выбранным фильтрам
             for tag_class in soup.find(class_=self.current_panel):
 
                 # Проходимся по массиву и забираем теги а
                 for tag_a in tag_class.find_all("a", class_=self.class_ads):
 
                     if site == "avito":
-                        get_href.append(f"https://www.avito.ru{tag_a.get("href")}")
+                        avito_url = "https://www.avito.ru" + tag_a.get("href")
+                        get_href.append(avito_url)
 
                     else:
                         get_href.append(tag_a.get("href"))
@@ -97,6 +103,6 @@ class ParsingPages:
                     await append_new_url_from_pars(new_url, "database/base_urls.db")
                     logging.info(f"Добавлен {new_url}")
                 else:
-                    continue
+                    break
 
             await asyncio.sleep(15)

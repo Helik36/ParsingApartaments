@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from Parsing import ParsingPages
+from Parsing import ParsingSites
 
 logging.basicConfig(
     format="[%(asctime)s]: %(levelname)s - %(funcName)s: %(lineno)d - %(message)s",
@@ -77,7 +77,7 @@ async def pars_html_avito():
     while True:
 
         try:
-            await ParsingPages(urls_pars, current_panel, class_ads, cookies=cookies, headers=headers).parsing_page()
+            await ParsingSites(urls_pars, current_panel, class_ads, cookies=cookies, headers=headers).parsing_page()
             await asyncio.sleep(180)
 
         except:
