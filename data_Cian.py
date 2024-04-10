@@ -75,11 +75,11 @@ async def pars_html_cian():
     }
 
     while True:
-
-        await ParsingSites(urls_pars, current_panel, class_ads, cookies=cookies, headers=headers).parsing_page(proxies)
-        await asyncio.sleep(180)
-
-        await asyncio.sleep(45)
+        try:
+            await ParsingSites(urls_pars, current_panel, class_ads, cookies=cookies, headers=headers).parsing_page(proxies)
+            await asyncio.sleep(180)
+        except:
+            await asyncio.sleep(45)
 
 
 if __name__ == '__main__':

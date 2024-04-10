@@ -23,6 +23,7 @@ logging.basicConfig(
 BUTTON = range(1)
 path_for_db = "database/base_urls.db"
 
+
 # Сюда передаётся именно как (context: ContextTypes.DEFAULT_TYPE)
 async def send_message_about_new_url(context: ContextTypes.DEFAULT_TYPE):
 
@@ -66,6 +67,7 @@ async def send_message_about_new_url(context: ContextTypes.DEFAULT_TYPE):
 
         await detele_new_url(path_for_db)
 
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.chat_id
 
@@ -88,7 +90,7 @@ async def main():
     app.add_handler(CommandHandler("start", start))
 
     task1 = pars_html_cian()
-    task2 = pars_html_avito
+    task2 = pars_html_avito()
     tasks = [task1, task2]
 
     try:
