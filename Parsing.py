@@ -56,11 +56,8 @@ class ParsingSites:
 
             with open(f"{main_folder}/{type_search}/{name_page_html}", "w", encoding="utf-8") as file:
                 file.write(html)
-                logging.info(f'Сформирован файл {name_page_html}')
+            logging.info(f'Сформирован файл {name_page_html}')
 
-            # return type_search, f"{main_folder}/{type_search}/{name_page_html}"
-
-            logging.info(f'Переход к get_urls')
             await asyncio.sleep(0)
 
             db = ""
@@ -84,7 +81,7 @@ class ParsingSites:
             soup = BeautifulSoup(page, "html.parser")
 
             get_href = []
-            # Делаем выборку только по выбранным фильтрам
+            # Чтобы начать забирать ссылки, делаем выборку только по выбранным фильтрам
             for tag_class in soup.find(class_=self.current_panel):
 
                 # Проходимся по массиву и забираем теги а
@@ -98,14 +95,13 @@ class ParsingSites:
                         get_href.append(tag_a.get("href"))
 
             for new_url in get_href:
+                # Проверяем, нет ли новых добавленых ссылок в Бд
                 if new_url not in urls_in_db:
                     await append_urls(new_url, db, "database/base_urls.db")
                     await append_new_url_from_pars(new_url, "database/base_urls.db")
                     logging.info(f"Добавлен {new_url}")
 
-                # Если после длительной остановки нужно обновить полностью БД, на 1 запуск убрать нижние 2 строчки
                 else:
-
-                    break
+                    continue
 
             await asyncio.sleep(15)

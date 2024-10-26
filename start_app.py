@@ -6,14 +6,13 @@ import telegram
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-from config.config import API, MY_ID
-from database.check_in_db import append_users_id_telegram, get_users_id_telegram, get_new_url_from_pars, detele_new_url
+from config.config import API
+from database.check_in_db import create_db, append_users_id_telegram, get_users_id_telegram, get_new_url_from_pars, detele_new_url
 
 from data_Avito import pars_html_avito
 from data_Cian import pars_html_cian
 
 token = API
-my_id = MY_ID
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -85,6 +84,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def main():
+
+    await create_db()
+
     app = Application.builder().token(token).concurrent_updates(True).build()
 
     app.add_handler(CommandHandler("start", start))
@@ -101,6 +103,7 @@ async def main():
             await asyncio.gather(*tasks)
 
     except:
+        logging.error("Что-то пошло не так при запуске программы")
         KeyboardInterrupt()
 
 

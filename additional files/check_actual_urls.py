@@ -4,6 +4,12 @@ from database.check_in_db import check_url_in_db
 
 
 async def check_db():
+
+    """
+    Просто чтобы проверять ссылки
+    :return:
+    """
+
     urls_db, dates_db = await check_url_in_db("urls_apartment_db", "../database/base_urls.db")
 
     urls = urls_db

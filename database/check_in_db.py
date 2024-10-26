@@ -151,12 +151,3 @@ async def create_db():
 
     conn.commit()
     conn.close()
-
-
-if __name__ == '__main__':
-    # asyncio.run(create_db())
-    # asyncio.run(delete_users_id_telegram(path_db))
-    # asyncio.run(detele_new_url(path_db))
-    # asyncio.run(delete_urls_from_table(path_db))
-    # asyncio.run(app_users_id_telegram(path_db, 0000))
-    asyncio.run(detele_new_url(path_db))
