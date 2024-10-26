@@ -17,6 +17,8 @@ async def pars_html_avito():
                  "https://www.avito.ru/syktyvkar/komnaty/prodam-ASgBAgICAUSQA7wQ?cd=1&localPriority=1&s=104&user=1",
                  "https://www.avito.ru/syktyvkar/zemelnye_uchastki/prodam-ASgBAgICAUSWA9oQ?cd=1&s=104&user=1"]
 
+    urls_pars = ["https://www.avito.ru/syktyvkar/kvartiry/prodam-ASgBAgICAUSSA8YQ?f=ASgBAgICAkSSA8YQkL4Nlq41&s=104"]
+
     cookies = {
         'srv_id': 'FHt9AAx7oEzDiOo5.PFI3AEDMPnyUBrisRKKJ2qjm9uQrWKvpGK9aIEC8OpxhFVzSHdRMgWb3U1LH180=.t1JLP2_MEjpJOeUODaJ-MeQ9cPDE7J5t7x72zmzJMqU=.web',
         'u': '32e828rd.q4q4vk.10azkslkgpvg0',

@@ -89,9 +89,9 @@ async def main():
 
     app.add_handler(CommandHandler("start", start))
 
-    task1 = pars_html_cian()
+    # task1 = pars_html_cian()
     task2 = pars_html_avito()
-    tasks = [task1, task2]
+    tasks = [task2]
 
     try:
         async with app:

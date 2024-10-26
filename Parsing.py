@@ -102,7 +102,10 @@ class ParsingSites:
                     await append_urls(new_url, db, "database/base_urls.db")
                     await append_new_url_from_pars(new_url, "database/base_urls.db")
                     logging.info(f"Добавлен {new_url}")
+
+                # Если после длительной остановки нужно обновить полностью БД, на 1 запуск убрать нижние 2 строчки
                 else:
+
                     break
 
             await asyncio.sleep(15)
